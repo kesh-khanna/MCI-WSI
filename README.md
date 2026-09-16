@@ -10,8 +10,9 @@ These embeddings are intended for research use and have not been validated for c
 
 + [`demos/linear_probe_demo.ipynb`](demos/linear_probe_demo.ipynb) downloads TITAN slide embeddings and fits a linear classifier using patient-level train, validation, and test splits.
 + [`demos/abmil_demo.ipynb`](demos/abmil_demo.ipynb) downloads CONCH v1.5 patch embeddings and trains an attention-based multiple-instance learning classifier from [MIL-Lab](https://github.com/mahmoodlab/MIL-Lab) [1] using patient-level patch bags.
++ [`demos/similarity_search_demo.ipynb`](demos/similarity_search_demo.ipynb) searches all TITAN slide embeddings for similar patient cases and links the results to public cBioPortal annotations and IDC source images.
 
-Both notebooks demonstrate how to join the released embedding manifest with public clinical labels from the CCDI cBioPortal study and perform a simple downstream analysis.
+These notebooks demonstrate how to join the released embedding manifest with public clinical labels from the CCDI cBioPortal study and perform simple downstream analyses.
 
 ## Preprint
 
