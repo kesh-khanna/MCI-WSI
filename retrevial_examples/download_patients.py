@@ -3,18 +3,47 @@
 
 from __future__ import annotations
 
-from huggingface_hub import snapshot_download
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
-local_dir = '/path/to/your/local/directory'  # Replace with your desired local directory path
-model = 'conch_v15'  # Replace with the desired model name
-patient_ids = ['PANLMU', 'PBCMNT']  # Replace with the desired patient IDs
+import pandas as pd
+from huggingface_hub import hf_hub_download
 
-snapshot_download(
-    repo_id='CBIIT-CGBB/CCDI-MCI',
+
+local_dir = Path("/path/to/your/local/directory")
+model = "conch_v15"  # Choose titan, conch_v15, or uni2h.
+patient_ids = ["PANLMU", "PBCMNT"]
+max_workers = 4
+
+manifest_path = hf_hub_download(
+    repo_id="CBIIT-CGBB/CCDI-MCI",
     repo_type="dataset",
-    allow_patterns=[
-        *[f"embeddings/{model}/{patient_id}/*.h5" for patient_id in patient_ids],
-        "metadata/slide_manifest.csv",
-    ],
+    filename="metadata/slide_manifest.csv",
     local_dir=local_dir,
 )
+manifest = pd.read_csv(manifest_path)
+
+selected = manifest.loc[
+    manifest["patient_id"].isin(patient_ids)
+    ["patient_id", "series_instance_uid"],
+]
+
+filenames = [
+    f"embeddings/{model}/{row.patient_id}/{row.series_instance_uid}.h5"
+    for row in selected.itertuples(index=False)
+]
+
+def download_file(filename):
+    return hf_hub_download(
+        repo_id="CBIIT-CGBB/CCDI-MCI",
+        repo_type="dataset",
+        filename=filename,
+        local_dir=local_dir,
+    )
+
+
+print(f"Downloading {len(filenames)} files for {len(patient_ids)} patients")
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    downloaded_files = list(executor.map(download_file, filenames))
+
+print(f"Downloaded {len(downloaded_files)} files to {local_dir}")
