@@ -14,6 +14,8 @@ These embeddings are intended for research use and have not been validated for c
 
 These notebooks demonstrate how to join the released embedding manifest with public clinical labels from the CCDI cBioPortal study and perform simple downstream analyses.
 
+> We welcome additional demos at PRs to this project!
+
 ## Preprint
 
 Preprint citation and link to be added.
